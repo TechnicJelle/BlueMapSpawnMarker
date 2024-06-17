@@ -16,13 +16,13 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class BlueMapSpawnMarker implements Runnable {
-	String addonID;
-	String addonVersion;
-	Logger logger;
-	UpdateChecker updateChecker;
+	private Logger logger;
+	private UpdateChecker updateChecker;
 
 	@Override
 	public void run() {
+		String addonID;
+		String addonVersion;
 		try {
 			addonID = BMNative.getAddonID(this.getClass().getClassLoader());
 			addonVersion = BMNative.getAddonMetadataKey(this.getClass().getClassLoader(), "version");
@@ -36,7 +36,7 @@ public class BlueMapSpawnMarker implements Runnable {
 		BlueMapAPI.onEnable(onEnableListener);
 	}
 
-	final Consumer<BlueMapAPI> onEnableListener = api -> {
+	final private Consumer<BlueMapAPI> onEnableListener = api -> {
 		updateChecker.logUpdateMessage(logger);
 
 		Config config;
