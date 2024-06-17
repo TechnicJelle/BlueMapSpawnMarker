@@ -1,0 +1,21 @@
+.spawn-marker > .bm-marker-poi-label {
+	white-space: nowrap;
+	max-width: unset !important;
+	text-align: center;
+	line-height: 1.3em;
+	color: var(--theme-fg);
+}
+
+.spawn-marker > .bm-marker-poi-label > .content {
+	display: flex;
+	justify-content: center;
+	margin-top: 0.1em;
+}
+
+.spawn-marker > .bm-marker-poi-label > .content > .entry {
+	margin: 0 .5em;
+}
+
+.spawn-marker > .bm-marker-poi-label > .content > .entry > .label {
+	color: var(--theme-fg-light);
+}

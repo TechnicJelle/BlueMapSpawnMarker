@@ -1,0 +1,5 @@
+{
+	"id": "BlueMapSpawnMarker",
+	"entrypoint": "com.technicjelle.BlueMapSpawnMarker.BlueMapSpawnMarker",
+	"version": "${project.version}"
+}
