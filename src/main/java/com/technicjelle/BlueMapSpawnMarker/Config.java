@@ -2,8 +2,7 @@ package com.technicjelle.BlueMapSpawnMarker;
 
 import com.flowpowered.math.vector.Vector2i;
 import com.flowpowered.math.vector.Vector3i;
-import com.technicjelle.BMUtils.BMCopy;
-import com.technicjelle.BMUtils.BMNative;
+import com.technicjelle.BMUtils.BMNative.BMNConfigDirectory;
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
@@ -40,8 +39,8 @@ public class Config {
 	private @Nullable Double maxDistance;
 
 	public static Config load(BlueMapAPI api) throws IOException {
-		BMCopy.Native.jarResourceToAllocatedConfigDirectory(api, Config.class.getClassLoader(), fileName, fileName, false);
-		Path configDirectory = BMNative.getAllocatedConfigDirectory(api, Config.class.getClassLoader());
+		BMNConfigDirectory.BMNCopy.fromJarResource(api, Config.class.getClassLoader(), fileName, fileName, false);
+		Path configDirectory = BMNConfigDirectory.getAllocatedDirectory(api, Config.class.getClassLoader());
 		Path configFile = configDirectory.resolve(fileName);
 
 		HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
