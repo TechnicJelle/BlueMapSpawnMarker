@@ -1,5 +1,5 @@
 {
-	"id": "BlueMapSpawnMarker",
-	"entrypoint": "com.technicjelle.BlueMapSpawnMarker.BlueMapSpawnMarker",
+	"id": "${project.artifactId}",
+	"entrypoint": "${project.groupId}.${project.artifactId}.${project.artifactId}",
 	"version": "${project.version}"
 }

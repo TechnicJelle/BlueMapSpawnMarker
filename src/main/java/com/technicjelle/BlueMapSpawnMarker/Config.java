@@ -6,7 +6,6 @@ import com.technicjelle.BMUtils.BMNative.BMNConfigDirectory;
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -20,7 +19,7 @@ public class Config {
 	private static final String fileName = "marker.conf";
 
 	@Comment("Name of the marker and marker set")
-	private @NotNull String name;
+	private @Nullable String name;
 
 	//Marker Set Options
 	@Comment("Whether the marker set is toggleable on the website")
@@ -77,7 +76,7 @@ public class Config {
 		return marker;
 	}
 
-	final static String htmlTemplate = """
+	private static final String htmlTemplate = """
 			<div class="content">
 				<div class="entry"><span class="label">x: </span><span class="value">{{x}}</span></div>
 				<div class="entry"><span class="label">y: </span><span class="value">{{y}}</span></div>
