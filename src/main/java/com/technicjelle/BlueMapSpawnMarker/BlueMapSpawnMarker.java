@@ -11,6 +11,9 @@ import de.bluecolored.bluemap.api.BlueMapWorld;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 import de.bluecolored.bluemap.common.api.BlueMapWorldImpl;
+import de.bluecolored.bluemap.core.world.World;
+import de.bluecolored.bluemap.core.world.mca.MCAWorld;
+import de.bluecolored.bluemap.core.world.mca.data.LevelData;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -47,10 +50,13 @@ public class BlueMapSpawnMarker implements Runnable {
 			throw new RuntimeException(e);
 		}
 
-		for (BlueMapWorld world : api.getWorlds()) {
+		for (BlueMapWorld blueMapWorld : api.getWorlds()) {
 			//Get world spawn point
-			BlueMapWorldImpl worldImpl = (BlueMapWorldImpl) world;
-			Vector3i spawnPoint = worldImpl.world().getSpawnPoint();
+			BlueMapWorldImpl worldImpl = (BlueMapWorldImpl) blueMapWorld;
+			World world = worldImpl.world();
+			MCAWorld mcaWorld = (MCAWorld) world;
+			LevelData.Spawn spawn = mcaWorld.getLevelData().getData().getSpawn();
+			Vector3i spawnPoint = spawn.getPosition();
 
 			//Create markerSet
 			MarkerSet markerSet = config.createMarkerSet();
@@ -62,7 +68,7 @@ public class BlueMapSpawnMarker implements Runnable {
 			markerSet.put("spawn", marker);
 
 			//Add markerSet to all maps
-			for (BlueMapMap map : world.getMaps()) {
+			for (BlueMapMap map : blueMapWorld.getMaps()) {
 				logger.logInfo("Adding spawn marker to map " + map.getId());
 				map.getMarkerSets().put("spawn", markerSet);
 			}
