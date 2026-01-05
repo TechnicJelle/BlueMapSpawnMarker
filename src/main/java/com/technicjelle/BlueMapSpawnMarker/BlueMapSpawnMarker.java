@@ -50,7 +50,9 @@ public class BlueMapSpawnMarker implements Runnable {
 			throw new RuntimeException(e);
 		}
 
-		for (BlueMapWorld blueMapWorld : api.getWorlds()) {
+		if (api.getWorlds().isEmpty()) {
+			logger.logWarning("There are no worlds loaded in BlueMap, so no Spawn Markers have been added.");
+		} else for (BlueMapWorld blueMapWorld : api.getWorlds()) {
 			//Get world spawn point
 			BlueMapWorldImpl worldImpl = (BlueMapWorldImpl) blueMapWorld;
 			World world = worldImpl.world();
