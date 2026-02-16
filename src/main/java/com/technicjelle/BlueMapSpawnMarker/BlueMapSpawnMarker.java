@@ -16,6 +16,7 @@ import de.bluecolored.bluemap.core.world.mca.MCAWorld;
 import de.bluecolored.bluemap.core.world.mca.data.LevelData;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.function.Consumer;
 
 public class BlueMapSpawnMarker implements Runnable {
@@ -50,9 +51,10 @@ public class BlueMapSpawnMarker implements Runnable {
 			throw new RuntimeException(e);
 		}
 
-		if (api.getWorlds().isEmpty()) {
+		Collection<BlueMapWorld> worlds = api.getWorlds();
+		if (worlds.isEmpty()) {
 			logger.logWarning("There are no worlds loaded in BlueMap, so no Spawn Markers have been added.");
-		} else for (BlueMapWorld blueMapWorld : api.getWorlds()) {
+		} else for (BlueMapWorld blueMapWorld : worlds) {
 			//Get world spawn point
 			BlueMapWorldImpl worldImpl = (BlueMapWorldImpl) blueMapWorld;
 			World world = worldImpl.world();
