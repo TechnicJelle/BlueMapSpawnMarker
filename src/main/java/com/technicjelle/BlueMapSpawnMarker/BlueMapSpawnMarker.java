@@ -58,7 +58,7 @@ public class BlueMapSpawnMarker implements Runnable {
 			World world = worldImpl.world();
 			MCAWorld mcaWorld = (MCAWorld) world;
 			LevelData.Spawn spawn = mcaWorld.getLevelData().getData().getSpawn();
-			Vector3i spawnPoint = spawn.getPosition();
+			Vector3i spawnPoint = spawn.getPos();
 
 			//Create markerSet
 			MarkerSet markerSet = config.createMarkerSet();
