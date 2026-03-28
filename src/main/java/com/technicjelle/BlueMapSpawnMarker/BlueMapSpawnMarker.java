@@ -11,11 +11,15 @@ import de.bluecolored.bluemap.api.BlueMapWorld;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 import de.bluecolored.bluemap.common.api.BlueMapWorldImpl;
+import de.bluecolored.bluemap.core.storage.compression.Compression;
 import de.bluecolored.bluemap.core.world.World;
+import de.bluecolored.bluemap.core.world.mca.MCAUtil;
 import de.bluecolored.bluemap.core.world.mca.MCAWorld;
-import de.bluecolored.bluemap.core.world.mca.data.LevelData;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Consumer;
 
@@ -59,23 +63,38 @@ public class BlueMapSpawnMarker implements Runnable {
 			BlueMapWorldImpl worldImpl = (BlueMapWorldImpl) blueMapWorld;
 			World world = worldImpl.world();
 			MCAWorld mcaWorld = (MCAWorld) world;
-			LevelData.Spawn spawn = mcaWorld.getLevelData().getData().getSpawn();
-			Vector3i spawnPoint = spawn.getPos();
 
-			//Create markerSet
-			MarkerSet markerSet = config.createMarkerSet();
+			try {
+				LevelData levelData = loadLevelData(mcaWorld.getWorldFolder().resolve("level.dat"));
+				if (levelData == null) continue;
 
-			//Create Marker
-			POIMarker marker = config.createMarker(spawnPoint);
+				Vector3i spawnPoint = levelData.getData().getSpawn().getPos();
 
-			//Add Marker to markerSet
-			markerSet.put("spawn", marker);
+				//Create markerSet
+				MarkerSet markerSet = config.createMarkerSet();
 
-			//Add markerSet to all maps
-			for (BlueMapMap map : blueMapWorld.getMaps()) {
-				logger.logInfo("Adding spawn marker to map " + map.getId());
-				map.getMarkerSets().put("spawn", markerSet);
+				//Create Marker
+				POIMarker marker = config.createMarker(spawnPoint);
+
+				//Add Marker to markerSet
+				markerSet.put("spawn", marker);
+
+				//Add markerSet to all maps
+				for (BlueMapMap map : blueMapWorld.getMaps()) {
+					logger.logInfo("Adding spawn marker to map " + map.getId());
+					map.getMarkerSets().put("spawn", markerSet);
+				}
+			} catch (IOException e) {
+				logger.logError("Failed to load spawn for world: " + mcaWorld.getId(), e);
 			}
 		}
 	};
+
+	private static LevelData loadLevelData(Path path) throws IOException {
+		if (!Files.exists(path)) return null;
+		try (InputStream fileIn = Compression.GZIP.decompress(Files.newInputStream(path))) {
+			return MCAUtil.BLUENBT.read(fileIn, LevelData.class);
+		}
+	}
+
 }
