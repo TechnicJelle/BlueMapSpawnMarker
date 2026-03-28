@@ -1,6 +1,5 @@
 package com.technicjelle.BlueMapSpawnMarker;
 
-import com.flowpowered.math.vector.Vector3i;
 import com.technicjelle.BMUtils.BMCopy;
 import com.technicjelle.BMUtils.BMNative.BMNLogger;
 import com.technicjelle.BMUtils.BMNative.BMNMetadata;
@@ -12,6 +11,7 @@ import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 import de.bluecolored.bluemap.common.api.BlueMapWorldImpl;
 import de.bluecolored.bluemap.core.storage.compression.Compression;
+import de.bluecolored.bluemap.core.util.Key;
 import de.bluecolored.bluemap.core.world.World;
 import de.bluecolored.bluemap.core.world.mca.MCAUtil;
 import de.bluecolored.bluemap.core.world.mca.MCAWorld;
@@ -22,6 +22,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Consumer;
+
+import static com.technicjelle.BlueMapSpawnMarker.LevelData.Spawn;
 
 public class BlueMapSpawnMarker implements Runnable {
 	private BMNLogger logger;
@@ -68,13 +70,18 @@ public class BlueMapSpawnMarker implements Runnable {
 				LevelData levelData = loadLevelData(mcaWorld.getWorldFolder().resolve("level.dat"));
 				if (levelData == null) continue;
 
-				Vector3i spawnPoint = levelData.getData().getSpawn().getPos();
+				Spawn spawn = levelData.getData().getSpawn();
+
+				// Only put the marker on the world that actually has the spawn in it
+				Key spawnDimension = spawn.getDimension();
+				Key worldDimension = mcaWorld.getDimension();
+				if (!spawnDimension.equals(worldDimension)) continue;
 
 				//Create markerSet
 				MarkerSet markerSet = config.createMarkerSet();
 
 				//Create Marker
-				POIMarker marker = config.createMarker(spawnPoint);
+				POIMarker marker = config.createMarker(spawn.getPos());
 
 				//Add Marker to markerSet
 				markerSet.put("spawn", marker);
