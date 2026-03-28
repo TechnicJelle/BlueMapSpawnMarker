@@ -61,10 +61,7 @@ public class BlueMapSpawnMarker implements Runnable {
 		if (worlds.isEmpty()) {
 			logger.logWarning("There are no worlds loaded in BlueMap, so no Spawn Markers have been added.");
 		} else for (BlueMapWorld blueMapWorld : worlds) {
-			//Get world spawn point
-			BlueMapWorldImpl worldImpl = (BlueMapWorldImpl) blueMapWorld;
-			World world = worldImpl.world();
-			MCAWorld mcaWorld = (MCAWorld) world;
+			MCAWorld mcaWorld = getMCAWorld(blueMapWorld);
 
 			try {
 				LevelData levelData = loadLevelData(mcaWorld.getWorldFolder().resolve("level.dat"));
@@ -72,21 +69,21 @@ public class BlueMapSpawnMarker implements Runnable {
 
 				Spawn spawn = levelData.getData().getSpawn();
 
-				// Only put the marker on the world that actually has the spawn in it
+				// Only put the Marker on the World that actually has the Spawn in it
 				Key spawnDimension = spawn.getDimension();
 				Key worldDimension = mcaWorld.getDimension();
 				if (!spawnDimension.equals(worldDimension)) continue;
 
-				//Create markerSet
+				//Create MarkerSet
 				MarkerSet markerSet = config.createMarkerSet();
 
 				//Create Marker
 				POIMarker marker = config.createMarker(spawn.getPos());
 
-				//Add Marker to markerSet
+				//Add Marker to MarkerSet
 				markerSet.put("spawn", marker);
 
-				//Add markerSet to all maps
+				//Add MarkerSet to all maps
 				for (BlueMapMap map : blueMapWorld.getMaps()) {
 					logger.logInfo("Adding spawn marker to map " + map.getId());
 					map.getMarkerSets().put("spawn", markerSet);
@@ -102,6 +99,12 @@ public class BlueMapSpawnMarker implements Runnable {
 		try (InputStream fileIn = Compression.GZIP.decompress(Files.newInputStream(path))) {
 			return MCAUtil.BLUENBT.read(fileIn, LevelData.class);
 		}
+	}
+
+	private static MCAWorld getMCAWorld(BlueMapWorld blueMapWorld) {
+		BlueMapWorldImpl worldImpl = (BlueMapWorldImpl) blueMapWorld;
+		World world = worldImpl.world();
+		return (MCAWorld) world;
 	}
 
 }
